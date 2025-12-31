@@ -1,0 +1,255 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    direction: rtl;
+}
+
+
+.screen {
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+#splash-screen {
+    background: linear-gradient(135deg, #000000, #0f0f0f);
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
+
+.animation-text p {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 1.5rem 0;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 1.8s forwards;
+    text-shadow: 0 0 15px rgba(255, 165, 0, 0.6);
+}
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.btn {
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.glow {
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
+}
+
+.btn-warning {
+    background-color: #ff8c00;
+    border-color: #ff8c00;
+}
+
+.btn-warning:hover {
+    background-color: #ffa733;
+    border-color: #ffa733;
+}
+
+
+#main-screen button img,
+#role-screen button img,
+#create-room-screen button img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 0.8rem;
+    border-radius: 12px;
+}
+
+@media (max-width: 576px) {
+    #main-screen button img,
+    #role-screen button img,
+    #create-room-screen button img {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+
+#chat-container {
+    background: rgba(30, 30, 30, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 165, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    transition: all 0.4s ease;
+    z-index: 100;
+}
+
+#chat-messages {
+    padding: 1rem;
+}
+
+#chat-messages div {
+    margin-bottom: 0.8rem;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    max-width: 85%;
+}
+
+#chat-messages img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+}
+
+
+:fullscreen #chat-container,
+:fullscreen #chat-messages.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+}
+
+:fullscreen #chat-container:hover,
+:fullscreen #chat-messages:not(.hidden) {
+    opacity: 1;
+    pointer-events: all;
+}
+
+
+#content-display {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+}
+
+#content-display iframe,
+#content-display video {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+.play-center-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(255, 140, 0, 0.85);
+    color: white;
+    font-size: 2.2rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(255, 140, 0, 0.6);
+    transition: all 0.3s;
+}
+
+.play-center-btn:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+
+#control-panel {
+    background: rgba(40, 40, 40, 0.9);
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 600px;
+}
+
+
+#control-panel button {
+    min-width: 100px;
+}
+
+
+@media (max-width: 768px) {
+    .screen {
+        padding: 1.5rem 0.8rem;
+    }
+
+    h1, h2, h3 {
+        font-size: 1.6rem;
+    }
+
+    .btn {
+        font-size: 0.95rem;
+        padding: 0.6rem 1.2rem;
+    }
+
+    #chat-container {
+        width: 100% !important;
+        height: 40vh !important;
+        border-radius: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+    }
+
+    #content-display {
+        aspect-ratio: 1 / 1; 
+    }
+}
+
+@media (max-width: 576px) {
+    .animation-text p {
+        font-size: 1.3rem;
+    }
+
+    #main-screen .row > div,
+    #role-screen .row > div {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+
+.error {
+    color: #ff4d4d;
+    font-weight: bold;
+    margin-top: 0.8rem;
+}
+
+
+.border-warning {
+    border-color: #ff8c00 !important;
+}
+
+.text-warning {
+    color: #ff8c00 !important;
+}
