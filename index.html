@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>We Watch 2 gether</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/rooms.js"></script>
+    <script type="module" src="js/chat.js"></script>
+    <script type="module" src="js/video-controls.js"></script>
+    <script type="module" src="js/admin.js"></script>
+</head>
+<body>
+    <div id="splash-screen" class="screen container text-center bg-dark text-white">
+        <div class="animation-text">
+            <p id="welcome-text"></p>
+            <p id="prayer-text"></p>
+            <p id="arabs-only-text"></p>
+        </div>
+    </div>
+    
+    <div id="login-screen" class="screen container hidden">
+        <div class="row justify-content-center">
+            <button id="signup-btn" class="btn btn-primary glow m-2 col-5">إنشاء حساب</button>
+            <button id="login-btn" class="btn btn-primary glow m-2 col-5">تسجيل دخول</button>
+        </div>
+    </div>
+    
+    <div id="signup-form" class="screen container hidden">
+        <input type="text" id="username" class="form-control m-2" placeholder="ادخل اسمك">
+        <input type="number" id="age" class="form-control m-2" placeholder="عمرك (أقل 12 عام)">
+        <input type="password" id="password" class="form-control m-2" placeholder="كلمة المرور">
+        <input type="password" id="confirm-password" class="form-control m-2" placeholder="عيد كلمة المرور">
+        <select id="gender" class="form-select m-2">
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+        </select>
+        <div id="profile-pics" class="row justify-content-center hidden"></div>
+        <button id="complete-signup" class="btn btn-success m-2 hidden">أكمل</button>
+        <p id="signup-error" class="error text-danger"></p>
+    </div>
+    
+    <div id="login-form" class="screen container hidden">
+        <input type="text" id="login-username" class="form-control m-2" placeholder="الاسم">
+        <input type="password" id="login-password" class="form-control m-2" placeholder="كلمة المرور">
+        <button id="do-login" class="btn btn-primary m-2">تسجيل دخول</button>
+        <p id="login-error" class="error text-danger"></p>
+    </div>
+    
+    <div id="role-screen" class="screen container hidden">
+        <div class="row justify-content-center">
+            <button id="user-role" class="btn btn-warning m-2 col-5"><img src="images/member.png" alt="مستخدم" class="img-fluid"><br>مستخدم</button>
+            <button id="admin-role" class="btn btn-warning m-2 col-5"><img src="images/admin.png" alt="مشرف" class="img-fluid"><br>مشرف</button>
+        </div>
+    </div>
+    
+    <div id="admin-code-screen" class="screen container hidden">
+        <input type="text" id="admin-code" class="form-control m-2" placeholder="رمز التحقق">
+        <button id="verify-admin" class="btn btn-primary m-2">تحقق</button>
+        <p id="admin-error" class="error text-danger"></p>
+    </div>
+    
+    <div id="main-screen" class="screen container hidden">
+        <div class="row justify-content-center">
+            <button id="inbox-btn" class="btn btn-warning m-2 col-3"><img src="images/inbox.png" alt="صندوق الوارد" class="img-fluid"><br>صندوق الوارد</button>
+            <button id="create-room-btn" class="btn btn-warning m-2 col-3"><img src="images/crroom.png" alt="إنشاء غرفة" class="img-fluid"><br>إنشاء غرفة</button>
+            <button id="join-room-btn" class="btn btn-warning m-2 col-3"><img src="images/joun.png" alt="انضمام لغرفة" class="img-fluid"><br>انضمام لغرفة</button>
+            <button id="admin-panel-btn" class="btn btn-dark m-2 col-3 hidden">أدمن</button>
+        </div>
+    </div>
+    
+    <div id="inbox-screen" class="screen container hidden">
+        <button class="btn btn-secondary back-btn">←</button>
+        <div id="messages" class="list-group"></div>
+    </div>
+    
+    <div id="create-room-screen" class="screen container border border-warning p-3 hidden">
+        <button class="btn btn-secondary back-btn">←</button>
+        <input type="text" id="room-name" class="form-control m-2" placeholder="اسم الغرفة">
+        <div class="row">
+            <button id="youtube-category" class="btn btn-outline-warning m-2 col"><img src="images/youtube.png" alt="يوتيوب" class="img-fluid"></button>
+            <button id="screen-share-category" class="btn btn-outline-warning m-2 col"><img src="images/stream.png" alt="مشاركة شاشة" class="img-fluid"></button>
+            <button id="film-category" class="btn btn-outline-warning m-2 col"><img src="images/film.png" alt="أفلام" class="img-fluid"></button>
+        </div>
+        <button id="create-room" class="btn btn-success m-2">إنشاء</button>
+        <p id="create-error" class="error text-danger"></p>
+    </div>
+    
+    <div id="join-rooms-screen" class="screen container hidden">
+        <button class="btn btn-secondary back-btn">←</button>
+        <div id="active-rooms" class="list-group"></div>
+    </div>
+    
+    <div id="display-screen" class="screen container-fluid hidden">
+        <div class="d-flex justify-content-between">
+            <div id="viewer-count" class="text-white"></div>
+            <button id="exit-room" class="btn btn-danger">خروج</button>
+        </div>
+        <div id="content-display" class="position-relative bg-black"></div>
+        <div id="chat-container" class="position-fixed bottom-0 end-0 bg-dark p-2" style="width: 300px; height: 300px;">
+            <div id="chat-messages" class="overflow-auto h-75"></div>
+            <div class="input-group">
+                <input type="text" id="chat-input" class="form-control" placeholder="اكتب رسالتك">
+                <button id="send-chat" class="btn btn-primary">أرسل</button>
+            </div>
+        </div>
+        <button id="control-panel-btn" class="btn btn-info mt-2">لوحة التحكم</button>
+        <div id="control-panel" class="card hidden mt-2">
+            <div class="card-body">
+                <h5>التحكم للكل</h5>
+                <button id="play-all" class="btn btn-primary m-1">تشغيل/إيقاف</button>
+                <button id="rewind-all" class="btn btn-secondary m-1">تأخير 10ث</button>
+                <button id="forward-all" class="btn btn-secondary m-1">تقديم 10ث</button>
+                <select id="volume-all" class="form-select d-inline-block w-auto m-1">
+                    <option>50%</option>
+                    <option>20%</option>
+                    <option>100%</option>
+                    <option>10%</option>
+                    <option>80%</option>
+                </select>
+                <h5>التحكم الخاص</h5>
+                <button id="play-personal" class="btn btn-primary m-1">تشغيل/إيقاف</button>
+                <button id="rewind-personal" class="btn btn-secondary m-1">تأخير 10ث</button>
+                <button id="forward-personal" class="btn btn-secondary m-1">تقديم 10ث</button>
+                <button id="mute-personal" class="btn btn-warning m-1">كتم الصوت</button>
+                <button id="unmute-personal" class="btn btn-warning m-1">أعلى صوت</button>
+                <button id="fullscreen-personal" class="btn btn-info m-1">ملء الشاشة</button>
+            </div>
+        </div>
+        <button id="switch-display" class="btn btn-secondary mt-2 hidden">تبديل العرض</button>
+        <div id="admin-controls" class="hidden mt-2">
+            <button id="mute-chat" class="btn btn-dark m-1">كتم الشات</button>
+            <button id="delete-room" class="btn btn-danger m-1">حذف الروم</button>
+            <button id="welcome-chat" class="btn btn-success m-1">ترحيب شات</button>
+        </div>
+    </div>
+    
+    <div id="youtube-screen" class="screen container hidden">
+        <input type="text" id="youtube-url" class="form-control m-2" placeholder="رابط يوتيوب">
+        <button id="play-youtube" class="btn btn-primary m-2">تشغيل</button>
+        <p id="youtube-error" class="error text-danger"></p>
+    </div>
+    
+    <div id="screen-share-screen" class="screen container hidden">
+        <button id="start-share" class="btn btn-primary m-2">بدء مشاركة شاشتك</button>
+        <button id="stop-share" class="btn btn-danger m-2 hidden">إنهاء مشاركة شاشتك</button>
+        <button id="back-to-share" class="btn btn-secondary m-2 hidden">عد</button>
+        <p id="share-error" class="error text-danger"></p>
+    </div>
+    
+    <div id="film-screen" class="screen container hidden">
+        <button id="film-btn" class="btn btn-outline-light m-2"><img src="images/jgheojvdf.jpg" alt="المشروع أكس" class="img-fluid"><br>المشروع أكس</button>
+        <button id="add-film" class="btn btn-success m-2">أضف</button>
+        <div id="suggestion-area" class="hidden">
+            <textarea id="suggestion-text" class="form-control m-2" placeholder="اقترح فيلم"></textarea>
+            <button id="submit-suggestion" class="btn btn-primary m-2">أرفع</button>
+        </div>
+        <p id="film-error" class="error text-danger"></p>
+    </div>
+    
+    <div id="admin-panel-screen" class="screen container hidden">
+        <button id="mail-btn" class="btn btn-primary m-2">بريد</button>
+        <button id="send-msg-btn" class="btn btn-primary m-2">أرسل</button>
+    </div>
+    
+    <div id="admin-mail-screen" class="screen container hidden">
+        <div id="suggestions-list" class="list-group"></div>
+    </div>
+    
+    <div id="admin-send-screen" class="screen container hidden">
+        <input type="text" id="target-username" class="form-control m-2" placeholder="اسم العضو">
+        <textarea id="admin-message" class="form-control m-2" placeholder="رسالتك"></textarea>
+        <button id="send-admin-msg" class="btn btn-primary m-2">أرسل</button>
+        <p id="admin-send-error" class="error text-danger"></p>
+    </div>
+    
+    
+    <img src="images/logo.png" alt="Logo" class="d-none">
+    <img src="images/smllogo.png" alt="Small Logo" class="d-none">
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            showSplashScreen();
+        });
+        
+        function showSplashScreen() {
+            const splash = document.getElementById('splash-screen');
+            splash.classList.remove('hidden');
+            animateText();
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                document.getElementById('login-screen').classList.remove('hidden');
+            }, 6000);
+        }
+        
+        function animateText() {
+            setTimeout(() => document.getElementById('welcome-text').textContent = 'اهلا بيك في موقع WeWatch2gether', 0);
+            setTimeout(() => document.getElementById('prayer-text').textContent = 'لا تجعل المتعه تلهيك عن الصلاة و العباده', 2000);
+            setTimeout(() => document.getElementById('arabs-only-text').textContent = 'صمم هذا الموقع للعرب فقط .. This website is designed for Arabs only.', 4000);
+        }
+        
+        
+        document.querySelectorAll('.back-btn').forEach(btn => btn.addEventListener('click', () => {
+            btn.parentElement.classList.add('hidden');
+            document.getElementById('main-screen').classList.remove('hidden');
+        }));
+    </script>
+</body>
+</html>
